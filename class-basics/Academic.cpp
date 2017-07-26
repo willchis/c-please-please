@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Academic.h"
 
 Academic::Academic(string nameNew, string addressNew) : name(nameNew), address(addressNew) { }
@@ -8,4 +9,8 @@ string Academic::getName() {
 
 string Academic::getAddress() {
 	return address;
+}
+
+void Academic::SitInClass() {
+	cout << "Sitting SOMEWHERE in class" << endl;
 }

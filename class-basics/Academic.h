@@ -1,3 +1,6 @@
+#ifndef ACADEMIC_H
+#define ACADEMIC_H
+
 #include <iostream>
 using namespace std;
 
@@ -6,7 +9,9 @@ class Academic {
 		Academic(string name, string address);
 		string getName();
 		string getAddress();
+		virtual void SitInClass();
 	private:
 		string name;
 		string address;
 };
+#endif
