@@ -1,0 +1,7 @@
+{
+    "version": "0.1.0",
+    "command": "g++",
+    "isShellCommand": true,
+    "showOutput": "always",
+    "args": ["-g", "-o", "main.out", "main.cpp", "person.cpp", "student.cpp", "teacher.cpp"]
+}

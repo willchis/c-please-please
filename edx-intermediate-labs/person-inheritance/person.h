@@ -2,4 +2,13 @@
 using namespace std;
 
 class Person {
-	string first_name
+	private:
+		int age;
+	public:
+		string first_name;
+		string last_name;
+		virtual void OutputIdentity() {}
+		void OutputAge();
+	protected:
+		string phone;
+};
