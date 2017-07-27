@@ -8,7 +8,7 @@ class Person {
 		string first_name;
 		string last_name;
 		void SetAge(int inputAge);
-		virtual void OutputIdentity() {};
+		virtual void OutputIdentity() = 0;
 		virtual void OutputAge();
 	protected:
 		string phone;
