@@ -1,7 +1,7 @@
 #include "student.h"
 
 int main() {
-    Student johnny;
-    johnny.SetAge(21);
-    johnny.OutputAge();
+    Student* johnny =  new Student();
+    johnny->SetAge(21);
+    johnny->OutputAge();
 }
