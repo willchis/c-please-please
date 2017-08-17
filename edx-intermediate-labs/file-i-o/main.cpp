@@ -5,23 +5,37 @@ using namespace std;
 
 int main () {
 
-    fstream donationFile("donation_total.txt", ios_base::app);
+    fstream *donationFile = new fstream("donation_total.txt", fstream::app | fstream::in | fstream::out); // ios_base::app does not allow seekg to beginning.
 
-    if (donationFile.is_open())
+    if (donationFile->is_open())
     {
         // File opened OK, so use it…
         cout << "File open" << endl;
 
-        string nameAndAmount;
+        string name;
+        double amount;
         cout << "Enter donation name and amount: ";
-        cin >> nameAndAmount;
+        cin >> name >> amount;
 
-        donationFile << nameAndAmount << endl;
+        *donationFile << amount << endl;
 
-        cout << "You entered: " << nameAndAmount << endl;
+        cout << "Previous donations:" << endl;
+
+        donationFile->clear();
+        donationFile->seekg(0, ios::beg);
+
+        string line;
+        double total;
+        while (getline(*donationFile, line)) {
+            total += stod(line);
+            cout << line << endl;
+        }
+
+        cout << "Total now is: " << total << endl;
+        cout << "----------------------------------" << endl;
         
         // Close the file when we're done.
-        donationFile.close();
+        donationFile->close();
     }
     else
     {
