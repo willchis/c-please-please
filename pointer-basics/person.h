@@ -1,11 +1,11 @@
-using namespace std;
+#include <string>
 
 class Person {
 	public:
 		Person();
 		~Person();
-		string getName();
-		void setName(string name);
+		std::string getName();
+		void setName(std::string name);
 	private:
-		string name;
+		std::string name;
 };
