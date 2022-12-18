@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include "request.cpp"
 
 void padText(char text[], int textLength, char padCharacter, int padCount) {
     char tempText[textLength];
@@ -28,6 +29,7 @@ void padText(char text[], int textLength, char padCharacter, int padCount) {
 
 int main()
 {
+    get_request("https://api.openweathermap.org/data/2.5/weather?lat=40.002538&lon=-105.1399453&appId=dff9026699f844492353d69afac2caf7");
     std::time_t t = std::time(0);
     std::tm* now = std::localtime(&t);
     std::string today = std::to_string(now->tm_year + 1900) 
