@@ -40,8 +40,6 @@ void get_request(std::string url) {
                 std::cout << weather_data["main"]["temp"] << std::endl;
             }
         }
-
-        /* always cleanup */
         curl_easy_cleanup(curl);
     }
 }
