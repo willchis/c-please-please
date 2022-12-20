@@ -1,6 +1,7 @@
 #include <iostream>
 #include <curl/curl.h>
 #include "json.hpp"
+#include "weather.cpp"
 
 struct MemoryStruct {
   char *memory;
@@ -37,7 +38,10 @@ void get_request(std::string url) {
         } else {
             if (data.size() > 0) {
                 nlohmann::json weather_data = nlohmann::json::parse(data);
-                std::cout << weather_data["main"]["temp"] << std::endl;
+                //std::string temperature = weather_data["main"]["temp"];
+                float temp = kelvin_to_f(weather_data["main"]["temp"]);
+                std::cout << temp << "F" << std::endl;
+
             }
         }
         curl_easy_cleanup(curl);
