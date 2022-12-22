@@ -38,9 +38,9 @@
                 "-lcurl",
                 "-lwiringPi",
                 "-lwiringPiDev",
-                "-lpthread",
-                "-lcrypt",
-                "-lrt",
+                "-lpthread", // compile issues without
+                "-lcrypt", // compile issues without
+                "-lrt", // compile issues without
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],
