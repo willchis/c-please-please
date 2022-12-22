@@ -36,6 +36,11 @@
                 "-g",
                 "${file}",
                 "-lcurl",
+                "-lwiringPi",
+                "-lwiringPiDev",
+                "-lpthread",
+                "-lcrypt",
+                "-lrt",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],
