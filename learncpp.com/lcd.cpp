@@ -43,7 +43,12 @@ void pad(char *s, int padCount, char padChar) {
     }
 }
 
-void printCPUTemperature(){// sub function used to print CPU temperature
+void printWeather(std::string weather) {
+    lcdPosition(lcdhd, 0, 0);
+    lcdPrintf(lcdhd, "%s", weather);
+}
+
+void printCPUTemperature() {// sub function used to print CPU temperature
     FILE *fp;
     char str_temp[15];
     float CPU_temp;
@@ -66,7 +71,7 @@ void printCPUTemperature(){// sub function used to print CPU temperature
     fclose(fp);
 }
 
-void printDataTime(){//used to print system time 
+void printDataTime() {//used to print system time 
     time_t rawtime;
     struct tm *timeinfo;
     time(&rawtime);// get system time
@@ -76,54 +81,55 @@ void printDataTime(){//used to print system time
     lcdPrintf(lcdhd,"Time:%02d:%02d:%02d",timeinfo->tm_hour,timeinfo->tm_min,timeinfo->tm_sec); //Display system time on LCD
 }
 
-int detectI2C(int addr){
+int detectI2C(int addr) {
     int _fd = wiringPiI2CSetup (addr);   
-    if (_fd < 0){		
+    if (_fd < 0) {		
         printf("Error address : 0x%x \n",addr);
         return 0 ;
     } 
-    else{	
-        if(wiringPiI2CWrite(_fd,0) < 0){
+    else {	
+        if (wiringPiI2CWrite(_fd,0) < 0) {
             printf("Not found device in address 0x%x \n",addr);
             return 0;
         }
-        else{
+        else {
             printf("Found device in address 0x%x \n",addr);
             return 1 ;
         }
     }
 }
-int main(void){
+void setupAndPrint(std::string output) {
     int i;
 
     printf("Program is starting ...\n");
 
     wiringPiSetup();  
-    if(detectI2C(0x27)){
+    if (detectI2C(0x27)) {
         pcf8574_address = 0x27;
-    }else if(detectI2C(0x3F)){
+    } else if (detectI2C(0x3F)) {
         pcf8574_address = 0x3F;
-    }else{
+    } else {
         printf("No correct I2C address found, \n"
         "Please use command 'i2cdetect -y 1' to check the I2C address! \n"
         "Program Exit. \n");
-        return -1;
+        return;
     }
     pcf8574Setup(BASE, pcf8574_address);//initialize PCF8574
-    for(i=0;i<8;i++){
-        pinMode(BASE+i,OUTPUT);     //set PCF8574 port to output mode
-    } 
+    for (i = 0; i < 8; i++) {
+        pinMode(BASE + i,OUTPUT);     //set PCF8574 port to output mode
+    }
     digitalWrite(LED, HIGH);     //turn on LCD backlight
     digitalWrite(RW, LOW);       //allow writing to LCD
 	lcdhd = lcdInit(2,16,4,RS,EN,D4,D5,D6,D7,0,0,0,0);// initialize LCD and return “handle” used to handle LCD
-    if(lcdhd == -1) {
+    
+    if (lcdhd == -1) {
         printf("lcdInit failed !");
-        return 1;
+        return;
     }
-    while(1) {
-        printCPUTemperature();//print CPU temperature
-        printDataTime();        // print system time
+    while (1) {
+        // printCPUTemperature();//print CPU temperature
+        // printDataTime();        // print system time
+        printWeather(output);
         delay(1000);
     }
-    return 0;
 }
