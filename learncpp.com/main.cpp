@@ -4,6 +4,8 @@
 #include "request.cpp"
 #include "lcd.cpp"
 
+// arm-linux-gnueabihf-g++ -O3 -g3 -Wall -c -o -fPIC "main.o" -lcurl -lwiringPi -lwiringPiDev -lpthread -lcrypt -lrt "main.cpp"
+
 void padText(char text[], int textLength, char padCharacter, int padCount) {
     char tempText[textLength];
     char tempChar = text[0];
