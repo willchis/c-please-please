@@ -21,9 +21,10 @@ int pcf8574_address = 0x27;        // PCF8574T:0x27, PCF8574AT:0x3F
 #define D6      BASE+6
 #define D7      BASE+7
 
-int lcdhd;// used to handle LCD
+int lcdHandle;// used to handle LCD
 int position = 0;
 int maxWidth = 16;
+int REFRESH_TIME_SECS = 60 * 5;
 
 void padAndClear(std::string &str, const size_t padSize, const size_t maxWidth, const char paddingChar = ' ')
 {
@@ -44,8 +45,8 @@ void pad(char *s, int padCount, char padChar) {
 }
 
 void printWeather(std::string weather) {
-    lcdPosition(lcdhd, 0, 0);
-    lcdPrintf(lcdhd, "%s", weather);
+    lcdPosition(lcdHandle, 0, 0);
+    lcdPrintf(lcdHandle, "%s", "Temp: " + weather);
 }
 
 void printCPUTemperature() {// sub function used to print CPU temperature
@@ -57,7 +58,7 @@ void printCPUTemperature() {// sub function used to print CPU temperature
     fgets(str_temp, 15, fp);      // read file temp
     CPU_temp = atof(str_temp)/1000.0;   // convert to Celsius degrees
     printf("CPU's temperature : %.2f \n", CPU_temp);
-    lcdPosition(lcdhd, position, 0);     // set the LCD cursor position to (0,0)
+    lcdPosition(lcdHandle, position, 0);     // set the LCD cursor position to (0,0)
     position += 1;
     if (position > maxWidth) {
         position = 0;
@@ -67,7 +68,7 @@ void printCPUTemperature() {// sub function used to print CPU temperature
       std::string buffAsStdStr = buff;
       pad(str_temp, position, ' ');
    // std::cout << buffAsStdStr;
-    lcdPrintf(lcdhd, "%s", str_temp);// Display CPU temperature on LCD
+    lcdPrintf(lcdHandle, "%s", str_temp);// Display CPU temperature on LCD
     fclose(fp);
 }
 
@@ -77,8 +78,8 @@ void printDataTime() {//used to print system time
     time(&rawtime);// get system time
     timeinfo = localtime(&rawtime);//convert to local time
     printf("%s \n",asctime(timeinfo));
-    lcdPosition(lcdhd, 0, 1);// set the LCD cursor position to (0,1) 
-    lcdPrintf(lcdhd,"Time:%02d:%02d:%02d",timeinfo->tm_hour,timeinfo->tm_min,timeinfo->tm_sec); //Display system time on LCD
+    lcdPosition(lcdHandle, 0, 1);// set the LCD cursor position to (0,1) 
+    lcdPrintf(lcdHandle,"Time:%02d:%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec); //Display system time on LCD
 }
 
 int detectI2C(int addr) {
@@ -98,7 +99,7 @@ int detectI2C(int addr) {
         }
     }
 }
-void setupAndPrint(std::string output) {
+void setupAndPrint(std::string (*dataCallback)()) {
     int i;
 
     printf("Program is starting ...\n");
@@ -120,16 +121,25 @@ void setupAndPrint(std::string output) {
     }
     digitalWrite(LED, HIGH);     //turn on LCD backlight
     digitalWrite(RW, LOW);       //allow writing to LCD
-	lcdhd = lcdInit(2,16,4,RS,EN,D4,D5,D6,D7,0,0,0,0);// initialize LCD and return “handle” used to handle LCD
+    // initialize LCD and return “handle” used to handle LCD
+	lcdHandle = lcdInit(2, 16, 4, RS, EN, D4, D5, D6, D7, 0, 0, 0, 0);
     
-    if (lcdhd == -1) {
+    if (lcdHandle == -1) {
         printf("lcdInit failed !");
         return;
     }
+    int counter = 0;
+    std::string weatherInfo = dataCallback();
     while (1) {
         // printCPUTemperature();//print CPU temperature
         // printDataTime();        // print system time
-        printWeather(output);
+        if (counter > REFRESH_TIME_SECS) {
+            counter = 0;
+            weatherInfo = dataCallback();
+        }
+        printWeather(weatherInfo);
+        printDataTime();
         delay(1000);
+        counter++;
     }
 }
