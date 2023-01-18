@@ -44,9 +44,9 @@ void pad(char *s, int padCount, char padChar) {
     }
 }
 
-void printWeather(std::string weather) {
+void printWeather(Weather weather) {
     lcdPosition(lcdHandle, 0, 0);
-    lcdPrintf(lcdHandle, "%s", "Temp: " + weather);
+    lcdPrintf(lcdHandle, "%f", weather.temperature);
 }
 
 void printCPUTemperature() {// sub function used to print CPU temperature
@@ -77,7 +77,7 @@ void printDataTime() {//used to print system time
     struct tm *timeinfo;
     time(&rawtime);// get system time
     timeinfo = localtime(&rawtime);//convert to local time
-    printf("%s \n",asctime(timeinfo));
+    printf("%s \n", asctime(timeinfo));
     lcdPosition(lcdHandle, 0, 1);// set the LCD cursor position to (0,1) 
     lcdPrintf(lcdHandle,"Time:%02d:%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec); //Display system time on LCD
 }
@@ -99,7 +99,7 @@ int detectI2C(int addr) {
         }
     }
 }
-void setupAndPrint(std::string (*dataCallback)()) {
+void setupAndPrint(Weather (*dataCallback)()) {
     int i;
 
     printf("Program is starting ...\n");
@@ -129,7 +129,7 @@ void setupAndPrint(std::string (*dataCallback)()) {
         return;
     }
     int counter = 0;
-    std::string weatherInfo = dataCallback();
+    Weather weatherInfo = dataCallback();
     while (1) {
         // printCPUTemperature();//print CPU temperature
         // printDataTime();        // print system time
