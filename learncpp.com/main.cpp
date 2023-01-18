@@ -47,8 +47,9 @@ int main()
 
     //padText(test, length, ' ', 5);
 
-    //std::cout << "result: " << test;
     setupAndPrint(&refreshData);
+    //printDataTime(0, "UTC");
+    //printDataTime(-7, "MDT");
     //refreshData();
     return 0;
 }

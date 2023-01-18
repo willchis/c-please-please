@@ -46,14 +46,14 @@ void pad(char *s, int padCount, char padChar) {
 
 void printWeather(Weather weather) {
     lcdPosition(lcdHandle, 0, 0);
-    lcdPrintf(lcdHandle, "%f", weather.temperature);
+    lcdPrintf(lcdHandle, "%.0f", weather.temperature);
 }
 
 void printCPUTemperature() {// sub function used to print CPU temperature
     FILE *fp;
     char str_temp[15];
     float CPU_temp;
-    // CPU temperature data is stored in this directory.
+    // CPU temperature data is stored in this directory.l
     fp=fopen("/sys/class/thermal/thermal_zone0/temp","r");
     fgets(str_temp, 15, fp);      // read file temp
     CPU_temp = atof(str_temp)/1000.0;   // convert to Celsius degrees
@@ -62,24 +62,23 @@ void printCPUTemperature() {// sub function used to print CPU temperature
     position += 1;
     if (position > maxWidth) {
         position = 0;
-     }
-      char buff[16];
-      //snprintf(buff, sizeof(buff), "CPU: %.2fC", CPU_temp);
-      std::string buffAsStdStr = buff;
-      pad(str_temp, position, ' ');
-   // std::cout << buffAsStdStr;
+    }
+    char buff[16];
+    
+    std::string buffAsStdStr = buff;
+    pad(str_temp, position, ' ');
     lcdPrintf(lcdHandle, "%s", str_temp);// Display CPU temperature on LCD
     fclose(fp);
 }
 
-void printDataTime() {//used to print system time 
+void printDataTime(int adjust, const char* timezone) {
     time_t rawtime;
     struct tm *timeinfo;
     time(&rawtime);// get system time
-    timeinfo = localtime(&rawtime);//convert to local time
+    timeinfo = localtime(&rawtime);
     printf("%s \n", asctime(timeinfo));
     lcdPosition(lcdHandle, 0, 1);// set the LCD cursor position to (0,1) 
-    lcdPrintf(lcdHandle,"Time:%02d:%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec); //Display system time on LCD
+    lcdPrintf(lcdHandle,"%s:%02d:%02d:%02d", timezone, timeinfo->tm_hour + adjust, timeinfo->tm_min, timeinfo->tm_sec); //Display system time on LCD
 }
 
 int detectI2C(int addr) {
@@ -138,7 +137,11 @@ void setupAndPrint(Weather (*dataCallback)()) {
             weatherInfo = dataCallback();
         }
         printWeather(weatherInfo);
-        printDataTime();
+        if (counter % 3 == 0) {
+            printDataTime(0, "UTC");
+        } else {
+            printDataTime(0, "MDT");
+        }
         delay(1000);
         counter++;
     }
