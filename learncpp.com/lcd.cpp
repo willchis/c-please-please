@@ -46,7 +46,7 @@ void pad(char *s, int padCount, char padChar) {
 
 void printWeather(Weather weather) {
     lcdPosition(lcdHandle, 0, 0);
-    lcdPrintf(lcdHandle, "%.0f", weather.temperature);
+    lcdPrintf(lcdHandle, "Current Temp: %.0fF", weather.temperature);
 }
 
 void printCPUTemperature() {// sub function used to print CPU temperature
@@ -140,7 +140,7 @@ void setupAndPrint(Weather (*dataCallback)()) {
         if (counter % 3 == 0) {
             printDataTime(0, "UTC");
         } else {
-            printDataTime(0, "MDT");
+            printDataTime(-7, "MDT");
         }
         delay(1000);
         counter++;
