@@ -31,7 +31,7 @@ void padText(char text[], int textLength, char padCharacter, int padCount) {
 }
 
 Weather refreshData() {
-    return get_request("https://api.openweathermap.org/data/2.5/weather?lat=40.002538&lon=-105.1399453&appId=dff9026699f844492353d69afac2caf7");
+    return get_request("https://api.openweathermap.org/data/2.5/weather?lat=40.002538&lon=-105.1399453&appId=");// TODO: add app ID
 }
 
 int main()
